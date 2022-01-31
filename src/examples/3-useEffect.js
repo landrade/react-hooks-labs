@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function UseEffectExample(props) {
+export default function UseEffectExample() {
   const [name, setName] = useState("Leo");
   const [show, setShow] = useState(true);
 
@@ -15,10 +15,10 @@ export default function UseEffectExample(props) {
 }
 
 function InternalComponent(props) {
-  useEffect(() => {
-    console.log("useEffect: deps = undefined");
-    return () => console.log("teardown: useEffect: deps = undefined");
-  });
+   useEffect(() => {
+     console.log("useEffect: deps = undefined");
+     return () => console.log("teardown: useEffect: deps = undefined");
+   });
 
   useEffect(() => {
     console.log("useEffect: deps = []");
@@ -33,3 +33,16 @@ function InternalComponent(props) {
 
   return <div>{props.name}</div>;
 }
+
+// Como funciona el teardown
+// const unsubscribe = (id) => {
+//   clearInterval(id)
+// }
+
+// const subscribe = (fn) => {
+//   const id = setInterval(fn, 1000);
+//   return () => unsubscribe(id);
+// }
+
+// const unsub = subscribe(() => {})
+// unsub();

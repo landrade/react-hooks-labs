@@ -2,8 +2,8 @@ import { useReducer } from "react";
 import Examples from "./Examples";
 
 const examples = {
-  example1: Example1,
-  example2: Example2
+  "initial value": Example1,
+  "initial function": Example2
 };
 
 export default function UseReducerExample() {

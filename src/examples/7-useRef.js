@@ -1,9 +1,10 @@
-import { memo, useCallback, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { render } from "react-dom";
 import Examples from "./Examples";
 
 const examples = {
   "elemento dom": memo(Example1),
-  "render count": memo(Example2)
+  "count interactions": memo(Example2),
 };
 
 export default function UseRefExample() {
@@ -21,24 +22,39 @@ function Example1() {
 }
 
 function Example2() {
-  const [counter, setCounter] = useState(0);
-  const increment = useCallback(() => setCounter((prev) => prev + 1), []);
-  const decrement = useCallback(() => setCounter((prev) => prev - 1), []);
+  const interactions = useRef(0);
+  const [counter, setCounter] = useState(() => 0);
+  const increment = useCallback(() => {
+    interactions.current++;
+    setCounter((prev) => prev + 1)
+  }, []);
+  const decrement = useCallback(() => {
+    interactions.current++;
+    setCounter((prev) => prev - 1)
+  }, []);
   return (
-    <Counter counter={counter} increment={increment} decrement={decrement} />
+    <>
+      <div>Interections: {interactions.current}</div>
+      <div>
+        <div>Counter: {counter}</div>
+        <button onClick={decrement}>-</button>
+        <button onClick={increment}>+</button>
+      </div>
+    </>
   );
 }
 
-const Counter = (props) => {
-  const renderCount = useRef(0);
-  renderCount.current = renderCount.current + 1;
+// Exemplo repassando o elemento para o componente
+function render(elm, props) {
+  Vue.render(elm, <ComponentXyz {...props} />)
+}
 
-  return (
-    <div>
-      <div>Rendered: {renderCount.current}</div>
-      <div>Counter: {props.counter}</div>
-      <button onClick={props.decrement}>-</button>
-      <button onClick={props.increment}>+</button>
-    </div>
-  );
-};
+function RenderReactDOM(props) {
+  const ref = useRef()
+
+  useEffect(() => {
+    render(ref.current, props)
+  }, [])
+
+  return <div ref={ref}></div>
+}

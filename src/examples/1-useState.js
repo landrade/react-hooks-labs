@@ -1,27 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Examples from "./Examples";
 
 const examples = {
-  example1: Example1,
-  example2: Example2,
-  example3: Example3
+  "Exemplo 1 - Simples": Example1,
+  "Exemplo 2.1 - Set state baseado no state anterior - errado": Example2Wrong,
+  "Exemplo 2.2 - Set state baseado no state anterior - certo": Example2Right,
+  "Exemplo 3 - Merge com state anterior": Example3,
+  "Examplo 4 - expensible default values": Example4,
+  "Examplo 5 - expensible default values right way": Example5
 };
 
 export default function UseStateExample() {
-  const [example, setExample] = useState("example1");
-  const Example = examples[example];
-  return (
-    <div>
-      {Object.entries(examples).map(([k, v]) => {
-        return (
-          <button key={k} onClick={() => setExample(k)}>
-            {k}
-          </button>
-        );
-      })}
-      <h2>{example}</h2>
-      <Example />
-    </div>
-  );
+  return <Examples examples={examples} />
 }
 
 function Example1() {
@@ -38,7 +28,37 @@ function Example1() {
   );
 }
 
-function Example2() {
+function Example2Wrong() {
+  const [state, setState] = useState(0);
+  useEffect(() => {
+    setState(state + 1);
+    setState(state + 1);
+    setState(state + 1);
+  }, [])
+
+  return (
+    <div>
+      <div>State: {state}</div>
+    </div>
+  );
+}
+
+function Example2Right() {
+  const [state, setState] = useState(0);
+  useEffect(() => {
+    setState(prevState => prevState + 1);
+    setState(prevState => prevState + 1);
+    setState(prevState => prevState + 1);
+  }, [])
+
+  return (
+    <div>
+      <div>State: {state}</div>
+    </div>
+  );
+}
+
+function Example3() {
   const [state, setState] = useState({ counter: 0, name: "Leo" });
   const increment = () =>
     setState((prevState) => ({ ...prevState, counter: prevState.counter + 1 }));
@@ -59,9 +79,22 @@ function expensibleState() {
   return 1000;
 }
 
-function Example3() {
+function Example4() {
   const [counter, setCounter] = useState(expensibleState());
-  // const [counter, setCounter] = useState(() => expensibleState());
+  const increment = () => setCounter((prevState) => prevState + 1);
+  const decrement = () => setCounter((prevState) => prevState - 1);
+
+  return (
+    <div>
+      <div>Counter: {counter}</div>
+      <button onClick={increment}>+</button>
+      <button onClick={decrement}>-</button>
+    </div>
+  );
+}
+
+function Example5() {
+  const [counter, setCounter] = useState(() => expensibleState());
   const increment = () => setCounter((prevState) => prevState + 1);
   const decrement = () => setCounter((prevState) => prevState - 1);
 

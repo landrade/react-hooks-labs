@@ -1,16 +1,46 @@
-import { useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
+import Examples from "./Examples";
+
+const examples = {
+  "sem useMemo": Example1,
+  "com useMemo": Example2,
+}
+export default function UseMemoExample() {
+  return <Examples examples={examples} />  
+}
 
 function range(total) {
   console.log("generating values");
   return [...Array(total).keys()];
 }
 
-export default function UseMemoExample() {
+function Example1() {
   const [counter, setCounter] = useState(0);
   const [totalItems, setTotalItems] = useState(1000);
-  // const generatedValues = range(totalItems)
-  const generatedValues = useMemo(() => range(totalItems), [totalItems]);
+  const generatedValues = range(totalItems)
 
+  return (
+    <div>
+      <Counter counter={counter} setCounter={setCounter} />
+      <div>totalItems: {totalItems}</div>
+      <input
+        onChange={(evt) => setTotalItems(parseInt(evt.target.value, 10))}
+        value={totalItems}
+      />
+      <div>
+        <Values values={generatedValues} />
+      </div>
+    </div>
+  );
+}
+
+
+
+function Example2() {
+  const [counter, setCounter] = useState(0);
+  const [totalItems, setTotalItems] = useState(1000);
+  const generatedValues = useMemo(() => range(1000), []);
+  
   return (
     <div>
       <Counter counter={counter} setCounter={setCounter} />
@@ -38,6 +68,16 @@ function Counter(props) {
   );
 }
 
-function Values(props) {
+const Values = memo((props) => {
   return props.values.map((value) => <div key={value}>{value}</div>);
-}
+});
+
+// Exemplo de implementacao do useMemo
+// const useMemo = (fn, deps) => {
+//   const [state, setState] = useState();
+//   useEffect(() => {
+//     setState(fn())
+//   }, deps)
+
+//   return state;
+// }
